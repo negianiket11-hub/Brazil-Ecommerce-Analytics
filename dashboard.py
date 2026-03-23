@@ -127,6 +127,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ── Auto-build dataset if not present ─────────────────────────────────────────
+import os, subprocess, sys
+_BASE = os.path.dirname(os.path.abspath(__file__))
+_CLEAN = os.path.join(_BASE, "main_dataset_clean.csv")
+if not os.path.exists(_CLEAN):
+    with st.spinner("Building dataset for the first time (this takes ~1 min)..."):
+        subprocess.run([sys.executable, os.path.join(_BASE, "merge_datasets.py")], check=True)
+        subprocess.run([sys.executable, os.path.join(_BASE, "clean_dataset.py")],  check=True)
+
 # ── Load raw data (cached) ────────────────────────────────────────────────────
 @st.cache_data
 def load_raw():
@@ -136,7 +145,7 @@ def load_raw():
         "order_estimated_delivery_date","shipping_limit_date",
         "review_creation_date","review_answer_timestamp",
     ]
-    df = pd.read_csv("main_dataset_clean.csv", parse_dates=DATE_COLS)
+    df = pd.read_csv(_CLEAN, parse_dates=DATE_COLS)
     df["freight_pct"] = (df["freight_value"] /
                          (df["price"] + df["freight_value"]).replace(0, np.nan) * 100)
     df["month"]       = df["order_purchase_timestamp"].dt.to_period("M")
