@@ -1,0 +1,23 @@
+# Generated / derived datasets (too large for git)
+main_dataset.csv
+main_dataset_clean.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+env/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
